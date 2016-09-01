@@ -12,40 +12,65 @@ package algoritmos;
  * @version 2016-08-25 
  *
  */
-public class SelectionSort<T>
+public class SelectionSort<T extends Comparable<T>>
 {
-    int i, j, n, minIndex, tmp;
-    int[] arr;
-    
-    public SelectionSort(int[] arr)
+    private T[] arr;
+    private long start_time, end_time;
+    private int min;
+    /**
+     * Constructor del algoritmo de ordenamiento por seleccion.
+     * @param arr Arreglo de elementos.
+     */
+    public SelectionSort(T[] arr)
     {
         this.arr = arr;
     }
     
-    public int[] getArray()
+    /**
+     * Metodo para sortear los elementos de un arreglo de genericos.
+     * @param arr Arreglo de elementos.
+     * @return Arreglo ordenado.
+     */
+    public T[] sort()
     {
-        return this.arr;
-    }
-    
-    public void sort(T[] arr)
-    {
-        n = this.arr.length;
-        for (i = 0; i < n - 1; i++) 
+        this.start_time = System.currentTimeMillis();
+        int n = this.arr.length;
+        for (int i = 0; i < n - 1; i++) 
         {
-            minIndex = i;
-            for (j = i + 1; j < n; j++)
+            min = i;
+            for (int j = i + 1; j < n; j++)
             {
-                if (this.arr[j] < this.arr[minIndex])
+                if (this.arr[j].compareTo(this.arr[min]) < 0)
                 {
-                      minIndex = j;
+                      min = j;
                 }
             }
-            if (minIndex != i) 
+            if (min != i) 
             {
-                tmp = this.arr[i];
-                this.arr[i] = this.arr[minIndex];
-                this.arr[minIndex] = tmp;
+                swap(i, min);
             }
         }
+        this.end_time = System.currentTimeMillis();
+        return this.arr;
+    }
+    /**
+     * Metodo para hacer un intercambio de posiciones en el arreglo.
+     * @param i Indice del primer elemento.
+     * @param j Indice del segundo elemento.
+     */
+    private void swap(int i, int j)
+    {
+        T tmp = this.arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+    }
+    
+    /**
+     * Metodo que retorna el tiempo de ejecucion de su ultimo ordenamiento.
+     * @return Tiempo
+     */
+    public float getExecutionTime()
+    {
+        return (this.end_time-this.start_time)/1000f;
     }
 }

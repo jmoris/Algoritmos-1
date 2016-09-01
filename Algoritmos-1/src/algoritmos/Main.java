@@ -6,7 +6,9 @@
 
 package algoritmos;
 
-import java.io.FileNotFoundException;
+import java.time.LocalTime;
+import java.util.Random;
+
 
 /**
  *
@@ -20,29 +22,50 @@ public class Main
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws FileNotFoundException 
+    public static void main(String[] args) 
     {
-        long time_start, time_end;
-        int numeros = 25;
-        int i = 1;
-        //incio iempo
-        while(numeros <= 100000000)
-        {
-            time_start = System.currentTimeMillis();
-            System.out.println("--------------Archivo " + i + " --------------");
-            ArchivoRandom rnd = new ArchivoRandom(numeros, "archivo-"+i);
-            SelectionSort ss = new SelectionSort(rnd.getArray());
-            time_end = System.currentTimeMillis();
-            System.out.println("El archivo-" + i + " tomo " + (( time_end - time_start ) / 1000.0) +" segundos.");
-            /*for (int n : ss.getArray()) {
-                System.out.println(n);
-            }*/
-
-            System.out.println("-------------- FIN --------------");
-            numeros *= 2;
-            i++;
+        /* Creamos los archivos de prueba */
+        Random rnd = new Random(LocalTime.now().getNano());
+        int n = 20,
+            c = 0,
+            i = 0;
+        while(n < 1000000){
+            Fichero<Integer> f = new Fichero<Integer>("archivo-"+c+".txt", true);
+            for(i = 0; i < n; i++){
+                f.escribir(rnd.nextInt(Integer.MAX_VALUE));
+            }
+            f.cerrar();
+            c++;
+            n*=2;
         }
-        //termino tiempo
+        /* Cargamos los archivos de prueba para su ordenamiento */
+        int tmp = c;
+        c = 0;
+        while(c < tmp){
+            Fichero<Integer> f2 = new Fichero<Integer>("archivo-"+c+".txt", false);
+            String[] src = f2.leer();
+            Integer[] dst = new Integer[src.length];
+            i = 0;
+            for (String str : src) {
+                dst[i] = Integer.valueOf(str);
+                i++;
+            }
+            /* Ordenamos el arreglo de enteros */
+            SelectionSort<Integer> ss = new SelectionSort<Integer>(dst);
+            Integer[] dst2 = ss.sort();
+            System.out.println(ss.getExecutionTime());
+            
+            /* Quitar comentarios para guardar los archivos.
+            Fichero<Integer> f3 = new Fichero<Integer>("orden-"+c+".txt", true);
+            for (Integer integer : dst2) {
+                f3.escribir(integer);
+            }
+            f3.cerrar();*/
+            f2.cerrar();
+            c++;
+
+        }
+        System.out.println(c);
     }
 
 }
